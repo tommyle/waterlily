@@ -14,8 +14,10 @@ class PlantsBloc {
 
   // Sinks - puts stuff into the stream
   getPlants() {
-    _plants = _fetchPlants();
-    _plantsController.sink.add(_plants);
+    if (_plants.length == 0) {
+      _plants = _fetchPlants();
+      _plantsController.sink.add(_plants);
+    }
   }
 
   // Pressing a button should add a new plant?
@@ -32,8 +34,8 @@ class PlantsBloc {
 
   List<Plant> _fetchPlants() {
     final plants = List<Plant>.generate(
-        5, (i) => Plant("Tommy's Plant $i", "Kitchen", "assets/lemonlime.jpg")); 
-    
+        5, (i) => Plant("Tommy's Plant $i", "Kitchen", "assets/lemonlime.jpg"));
+
     return plants;
   }
 }

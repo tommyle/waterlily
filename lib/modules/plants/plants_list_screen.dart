@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import './plants_provider.dart';
 import '../../helpers/colors.dart';
+import '../plant_details/plant_details_screen.dart';
+import '../../components/common.dart';
 
-class PlantsList extends StatelessWidget {
+class PlantsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = PlantsProvider.of(context);
+    final plantsBloc = PlantsProvider.of(context).plantsBloc;
 
-    bloc.getPlants();
+    // DO NOT KEEP THIS HERE!!! FOR TESTING ONLY!!!
+    plantsBloc.getPlants();
 
     return Scaffold(
-      appBar: buildAppBar(),
-      floatingActionButton: addFloatingActionButton(bloc),
+      appBar: defaultAppBar("Waterlily"),
+      floatingActionButton: addFloatingActionButton(plantsBloc, context),
       body: Container(
           child: Column(
         children: <Widget>[
-          buildList(bloc),
+          buildList(plantsBloc),
         ],
       )),
       backgroundColor: springWood,
@@ -45,10 +48,16 @@ class PlantsList extends StatelessWidget {
     );
   }
 
-  Widget addFloatingActionButton(PlantsBloc bloc) {
+  Widget addFloatingActionButton(PlantsBloc bloc, BuildContext context) {
     return FloatingActionButton(
-      onPressed: () =>
-          bloc.addPlant("Justine's Plant", "Living Room", "assets/aloe.jpg"),
+      // onPressed: () =>
+      // bloc.addPlant("Justine's Plant", "Living Room", "assets/aloe.jpg"),
+      onPressed: () { 
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PlantDetailsScreen()),
+        );
+      },
       tooltip: 'Add Plant',
       child: Icon(Icons.add),
     );
