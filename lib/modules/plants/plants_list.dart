@@ -8,8 +8,16 @@ class PlantsList extends StatelessWidget {
 
     bloc.getPlants();
 
-    return Scaffold(
-        appBar: AppBar(title: Text('My Plants')), body: buildList(bloc));
+    return Container(
+        margin: EdgeInsets.all(20),
+        child: Column(
+          children: <Widget>[
+            Container(margin: EdgeInsets.only(top: 50)),
+            buildList(bloc),
+            Container(margin: EdgeInsets.only(top: 25)),
+            addPlantButton(bloc)
+          ],
+        ));
   }
 
   Widget buildList(PlantsBloc bloc) {
@@ -18,24 +26,24 @@ class PlantsList extends StatelessWidget {
       builder: (context, AsyncSnapshot<List<Plant>> snapshot) {
         if (!snapshot.hasData) {
           return Text('No Plants');
-        }
-
-        return ListView.builder(
+        } 
+        
+        return Expanded(child: ListView.builder(
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
             final plant = snapshot.data[index];
             return Text(plant.name);
           },
-        );
+        ),);
       },
     );
   }
 
   Widget addPlantButton(PlantsBloc bloc) {
     return RaisedButton(
-        child: Text("Login"),
+        child: Text("Add Plants"),
         color: Colors.blue,
-        onPressed: bloc.addPlant("Justine's Plant", "Living Room", ""));
+        onPressed: () => bloc.addPlant("Justine's Plant", "Living Room", ""));
   }
 }
 

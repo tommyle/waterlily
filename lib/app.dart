@@ -16,7 +16,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlantsProvider(
       child: MaterialApp(
-          title: 'Log Me In',
+          title: 'Water Lily',
           home: Scaffold(
             body: PlantsList(),
           )),
