@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './plants_provider.dart';
+import '../../helpers/colors.dart';
 
 class PlantsList extends StatelessWidget {
   @override
@@ -8,13 +9,17 @@ class PlantsList extends StatelessWidget {
 
     bloc.getPlants();
 
-    return Container(
-        child: Column(
-          children: <Widget>[
-            buildList(bloc),
-            addPlantButton(bloc)
-          ],
-        ));
+    return Scaffold(
+      appBar: buildAppBar(),
+      floatingActionButton: addFloatingActionButton(bloc),
+      body: Container(
+          child: Column(
+        children: <Widget>[
+          buildList(bloc),
+        ],
+      )),
+      backgroundColor: springWood,
+    );
   }
 
   Widget buildList(PlantsBloc bloc) {
@@ -40,12 +45,26 @@ class PlantsList extends StatelessWidget {
     );
   }
 
-  Widget addPlantButton(PlantsBloc bloc) {
-    return RaisedButton(
-        child: Text("Add Plants"),
-        color: Colors.blue,
-        onPressed: () =>
-            bloc.addPlant("Justine's Plant", "Living Room", "assets/aloe.jpg"));
+  Widget addFloatingActionButton(PlantsBloc bloc) {
+    return FloatingActionButton(
+      onPressed: () =>
+          bloc.addPlant("Justine's Plant", "Living Room", "assets/aloe.jpg"),
+      tooltip: 'Add Plant',
+      child: Icon(Icons.add),
+    );
+  }
+
+  Widget buildAppBar() {
+    return AppBar(
+      title: Text(
+        "Water Lily",
+        style: TextStyle(
+            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 24),
+      ),
+      brightness: Brightness.light, //Status bar text color
+      elevation: 1,
+      backgroundColor: desertStorm,
+    );
   }
 }
 
@@ -59,18 +78,18 @@ class _PlantCell extends StatelessWidget {
     return Container(
         margin: EdgeInsets.only(top: 16, right: 16, left: 16),
         decoration: BoxDecoration(boxShadow: [
-         BoxShadow(
+          BoxShadow(
             color: Colors.black12,
             blurRadius: 10.0,
           ),
         ]),
         child: Row(
           children: <Widget>[
-           Expanded(
+            Expanded(
               child: _imageContainer(plant.imagePath),
               flex: 2,
             ),
-           Expanded(
+            Expanded(
               child: _infoContainer(),
               flex: 3,
             ),
@@ -106,18 +125,18 @@ class _PlantCell extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          _plantInfo(plant.name),
-         Expanded(
+          _plantInfo(plant.name, plant.location),
+          Expanded(
             child: Container(),
           ),
-         Container(
+          Container(
             child: Row(
               children: <Widget>[
-                 Expanded(
+                Expanded(
                   child: Image.asset("assets/water.png"),
                   flex: 1,
                 ),
-                 Expanded(
+                Expanded(
                   child: _waterInfoContainer(),
                   flex: 1,
                 ),
@@ -129,19 +148,17 @@ class _PlantCell extends StatelessWidget {
     );
   }
 
-  Widget _plantInfo(String name) {
+  Widget _plantInfo(String name, String location) {
     return Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-           Text(name,
-                style:
-                   TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-           Text("Mint",
-                style: TextStyle(fontSize: 16, color: Colors.green)),
-           Text("Kitchen Window",
+            Text(name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+            Text("Mint", style: TextStyle(fontSize: 16, color: Colors.green)),
+            Text(location,
                 style: TextStyle(fontSize: 16, color: Colors.blueGrey)),
           ],
         ),
@@ -163,3 +180,126 @@ class _PlantCell extends StatelessWidget {
     );
   }
 }
+
+// import 'dart:async';
+
+// import 'package:flutter/material.dart';
+// import './plants_provider.dart';
+// import './plants_list.dart';
+
+// class MyHomePage extends StatefulWidget {
+//   MyHomePage({Key key, this.title}) : super(key: key);
+
+//   // This widget is the home page of your application. It is stateful, meaning
+//   // that it has a State object (defined below) that contains fields that affect
+//   // how it looks.
+
+//   // This class is the configuration for the state. It holds the values (in this
+//   // case the title) provided by the parent (in this case the App widget) and
+//   // used by the build method of the State. Fields in a Widget subclass are
+//   // always marked "final".
+
+//   final String title;
+
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
+
+// class _WaterContainer extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return new Container(
+//       decoration: const BoxDecoration(
+//         image: const DecorationImage(
+//           fit: BoxFit.cover,
+//           image: const AssetImage("assets/water.png"),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class _PlantCell extends StatelessWidget {
+//   final String imageName;
+//   final String name;
+
+//   _PlantCell({this.imageName, this.name});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return new Container(
+//         margin: new EdgeInsets.only(top: 16, right: 16, left: 16),
+//         decoration: new BoxDecoration(boxShadow: [
+//           new BoxShadow(
+//             color: Colors.black12,
+//             blurRadius: 10.0,
+//           ),
+//         ]),
+//         child: new Row(
+//           children: <Widget>[
+//             new Expanded(
+//               child: new _ImageContainer(imageName: imageName),
+//               flex: 2,
+//             ),
+//             new Expanded(
+//               child: new _InfoContainer(name: name),
+//               flex: 3,
+//             ),
+//           ],
+//         ),
+//         constraints: BoxConstraints(maxHeight: 240, minHeight: 240));
+//   }
+// }
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   final StreamController<int> _streamController = StreamController<int>();
+//   int _counter = 0;
+
+//   @override
+//   void dispose() {
+//     _streamController.close();
+//     super.dispose();
+//   }
+
+//   List<String> _plants = [];
+
+//   void _addPlant(String name) {
+//     // Only add the task if the user actually entered something
+//     if (name.length > 0) {
+//       setState(() => _plants.add(name));
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         // Here we take the value from the MyHomePage object that was created by
+//         // the App.build method, and use it to set our appbar title.
+//         title: Text(
+//           widget.title,
+//           style: TextStyle(
+//               color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 24),
+//         ),
+//         brightness: Brightness.light, //Status bar text color
+//         elevation: 1,
+//         backgroundColor: desertStorm,
+//       ),
+//       body: ListView.builder(
+//         itemBuilder: (context, index) {
+//           if (index < _plants.length) {
+//             final imageName =
+//                 index % 2 == 0 ? "assets/aloe.jpg" : "assets/lemonlime.jpg";
+//             return _PlantCell(imageName: imageName, name: _plants[index]);
+//           }
+//         },
+//       ),
+//       backgroundColor: springWood,
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: _pushAddTodoScreen,
+//         tooltip: 'Increment',
+//         child: Icon(Icons.add),
+//       ), // This trailing comma makes auto-formatting nicer for build methods.
+//     );
+//   }
+// }

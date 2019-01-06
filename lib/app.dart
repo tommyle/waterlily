@@ -14,24 +14,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlantsProvider(
       child: MaterialApp(
-          home: Scaffold(
-        appBar: _buildAppBar(),
-        body: PlantsList(),
-        backgroundColor: springWood,
-      )),
-    );
-  }
-
-  Widget _buildAppBar() {
-    return AppBar(
-      title: Text(
-        "Water Lily",
-        style: TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      brightness: Brightness.light, //Status bar text color
-      elevation: 1,
-      backgroundColor: desertStorm,
+          home: PlantsList())
     );
   }
 }
