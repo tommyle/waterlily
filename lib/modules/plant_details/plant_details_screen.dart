@@ -12,57 +12,117 @@ class PlantDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: defaultAppBar("Plant Details"),
-      body: Center(
+      body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(12),
           ),
           imageCarousel(),
-          StreamBuilder(
-            stream: plantDetailsBloc.name,
-            builder: (context, snapshot) {
-              return TextField(
-                  onChanged: plantDetailsBloc.changeName,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                      hintText: "Give your plant a name", labelText: "Name"));
-            },
+          Container(
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child: StreamBuilder(
+              stream: plantDetailsBloc.name,
+              builder: (context, snapshot) {
+                return TextField(
+                    onChanged: plantDetailsBloc.changeName,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        hintText: "Give your plant a name", labelText: "Name"));
+              },
+            ),
           ),
-          StreamBuilder(
-            stream: plantDetailsBloc.location,
-            builder: (context, snapshot) {
-              return TextField(
-                  onChanged: plantDetailsBloc.changeLocation,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                      hintText: "Where your plant located",
-                      labelText: "Location"));
-            },
+          Container(
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child: StreamBuilder(
+              stream: plantDetailsBloc.location,
+              builder: (context, snapshot) {
+                return TextField(
+                    onChanged: plantDetailsBloc.changeLocation,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        hintText: "Where your plant located",
+                        labelText: "Location"));
+              },
+            ),
           ),
-          StreamBuilder(
-            stream: plantDetailsBloc.wateringFrequency,
-            builder: (context, snapshot) {
-              return TextField(
-                  onChanged: plantDetailsBloc.changeWateringFrequency,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                      hintText: "How often should to water this plant?",
-                      labelText: "Water"));
-            },
-          ),
-          RaisedButton(
+          frequencyControl(plantDetailsBloc),
+          CupertinoButton(
             child: Text("Create"),
-            color: Colors.white,
+            color: Colors.blue,
             onPressed: () {
               plantsProvider.addNewPlant();
               Navigator.pop(context);
             },
-            elevation: 0,
           ),
         ],
       )),
     );
+  }
+
+  Widget frequencyControl(PlantDetailsBloc bloc) {
+    return Container(
+        child: Column(children: <Widget>[
+      StreamBuilder(
+          stream: bloc.wateringSchedule,
+          builder: (context, AsyncSnapshot<int> snapshot) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Radio(
+                  value: 0,
+                  groupValue: snapshot.data,
+                  onChanged: (value) => bloc.changeWateringSchedule(value),
+                ),
+                Text(
+                  'Daily',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                Radio(
+                  value: 1,
+                  groupValue: snapshot.data,
+                  onChanged: (value) => bloc.changeWateringSchedule(value),
+                ),
+                Text(
+                  'Weekly',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+                Radio(
+                  value: 2,
+                  groupValue: snapshot.data,
+                  onChanged: (value) => bloc.changeWateringSchedule(value),
+                ),
+                Text(
+                  'Monthly',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ],
+            );
+          }),
+      Container(
+          padding: EdgeInsets.only(top: 10, right: 20, bottom: 10, left: 20),
+          child: Column(children: <Widget>[
+            StreamBuilder(
+                stream: bloc.getWateringScheduleAndFrequency,
+                builder: (context, AsyncSnapshot<String> snapshot) {
+                  return Text(snapshot.data ??
+                      "You have not seleted a watering frequency");
+                }),
+            StreamBuilder(
+                stream: bloc.wateringFrequency,
+                builder: (context, AsyncSnapshot<int> snapshot) {
+                  return Slider(
+                    min: 0.0,
+                    max: 15.0,
+                    onChanged: (value) =>
+                        bloc.changeWateringFrequency(value.toInt()),
+                    value: snapshot.hasData ? snapshot.data.toDouble() : 0,
+                  );
+                })
+          ])),
+    ]));
   }
 
   Widget imageCarousel() {
@@ -70,7 +130,6 @@ class PlantDetailsScreen extends StatelessWidget {
       'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_potted-plant_3-amaryllis-red-olaf-dormant-bulbs_prospect_sage-7_1500x.progressive.jpg?v=1544693095',
       'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_Grant-Terracotta_Terracotta-7_1500x.progressive.jpg?v=1543604683',
       'https://cdn.shopify.com/s/files/1/0150/6262/products/Planter-Straight-on_Hyde-Terracotta_Terracotta-5_1500x.progressive.jpg?v=1544090618',
-      'https://cdn.shopify.com/s/files/1/0150/6262/products/Planter-Straight-on_Grant-Terracotta_Terracotta-5_1500x.progressive.jpg?v=1544090617',
       'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_Hyde-Terracotta_Terracotta-5_1500x.progressive.jpg?v=1543592246',
       'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_potted-plant_pothos-jade-6_prospect_mustard-7_1500x.progressive.jpg?v=1541669485'
     ];
